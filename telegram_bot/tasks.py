@@ -1,6 +1,6 @@
 import asyncio
 
-from celery import Celery, shared_task
+from celery import Celery
 
 from telegram_bot import get_discounted_products, app
 
@@ -8,7 +8,6 @@ celery_app = Celery('deezcount', broker='redis://localhost:6379/0')
 
 @celery_app.task(name='tasks.send_discount')
 def send_discount(user_id, restaurant_id):
-
     print("Sending discount for user {}".format(user_id))
     products = get_discounted_products(restaurant_id)
     if products:
