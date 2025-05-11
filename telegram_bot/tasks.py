@@ -1,10 +1,8 @@
 import asyncio
 
-from celery import Celery
-
+from _base.celery import celery_app
 from telegram_bot import get_discounted_products, app
 
-celery_app = Celery('deezcount', broker='redis://localhost:6379/0')
 
 @celery_app.task(name='tasks.send_discount')
 def send_discount(user_id, restaurant_id):
@@ -17,14 +15,6 @@ def send_discount(user_id, restaurant_id):
         asyncio.run(app.bot.send_message(chat_id=user_id, text=message))
     else:
         asyncio.run(app.bot.send_message(chat_id=user_id, text="No discounted products found."))
-
-
-celery_app.conf.beat_schedule = {
-    'send-discounts-every-15-min': {
-        'task': 'tasks.send_bulk_discounts',
-        'schedule': 10,
-    },
-}
 
 
 @celery_app.task( name="tasks.send_bulk_discounts")

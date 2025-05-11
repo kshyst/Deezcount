@@ -1,2 +1,3 @@
 from .app import app
-from .req import get_discounted_products
+from telegram_bot.reqs.discount_request import get_discounted_products
+from telegram_bot.reqs.restaurant_list_request import get_restaurant_list
