@@ -23,17 +23,6 @@ class UserAdmin(admin.ModelAdmin):
         verbose_name = "Telegram User"
         verbose_name_plural = "Telegram Users"
 
-class UserAdminInline(admin.TabularInline):
-    model = User
-    extra = 0
-    fields = ["telegram_id", "telegram_username"]
-    readonly_fields = ["telegram_id", "telegram_username"]
-    show_change_link = True
-
-    class Meta:
-        model = User
-        verbose_name = "Telegram User"
-        verbose_name_plural = "Telegram Users"
 
 @admin.register(ActiveRestaurant)
 class ActiveRestaurantAdmin(admin.ModelAdmin):
@@ -44,7 +33,6 @@ class ActiveRestaurantAdmin(admin.ModelAdmin):
     list_filter = ["restaurant"]
     list_per_page = 20
     ordering = ["restaurant"]
-    inlines = [UserAdminInline]
 
     class Meta:
         model = ActiveRestaurant

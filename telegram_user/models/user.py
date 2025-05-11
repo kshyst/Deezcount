@@ -26,11 +26,10 @@ class User(AbstractUser):
         max_length=255,
     )
 
-    restaurant = models.ForeignKey(
+    restaurant = models.ManyToManyField(
         "ActiveRestaurant",
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
+        related_name="users",
     )
 
     does_want_notifications = models.BooleanField(
