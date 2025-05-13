@@ -15,6 +15,7 @@ from telegram.ext import (
     filters,
 )
 
+from telegram_bot.menus.show_active_restaurants import show_active_restaurants
 from telegram_bot.statics.commands import Commands
 from telegram_bot.statics.menu_ranges import RESTAURANT_NAME, SELECT_RESTAURANT, ENTRY
 from telegram_bot.statics.reply_keyboards import main_menu_buttons
@@ -54,7 +55,7 @@ async def start_command_handler(update: Update, context: ContextTypes.DEFAULT_TY
 
 if __name__ == "__main__":
     app.add_handler(CommandHandler("start", start_command_handler))
-
+    app.add_handler(MessageHandler(filters.Text(Commands.ACTIVE_RESTAURANT.value), show_active_restaurants))
     app.add_handler(ConversationHandler(
         entry_points=[
             CommandHandler("restaurant", send_restaurant_search_query),
