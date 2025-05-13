@@ -1,11 +1,12 @@
 import os
 
 import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_base.settings")
+django.setup()
 from asgiref.sync import sync_to_async
 from telegram import (
     Update,
     ReplyKeyboardMarkup,
-    KeyboardButton,
 )
 from telegram.ext import (
     ContextTypes,
@@ -19,9 +20,6 @@ from telegram_bot.menus.show_active_restaurants import show_active_restaurants
 from telegram_bot.statics.commands import Commands
 from telegram_bot.statics.menu_ranges import RESTAURANT_NAME, SELECT_RESTAURANT, ENTRY
 from telegram_bot.statics.reply_keyboards import main_menu_buttons
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_base.settings")
-django.setup()
 
 from telegram_user.models import User
 from app import app
