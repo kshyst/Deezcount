@@ -10,7 +10,7 @@ def send_discount(user_id, restaurant_id, restaurant_name):
     print("Sending discount for user {}".format(user_id))
     products = get_discounted_products(restaurant_id)
     if products:
-        message = f"Discounted products in restaurant {restaurant_name}:\n"
+        message = f"محصولات تخفیف خورده در : {restaurant_name} \n"
         for product in products:
             message += str(product)
         asyncio.run(app.bot.send_message(chat_id=user_id, text=message))
@@ -27,4 +27,5 @@ def send_bulk_discounts():
         users = restaurant.users.all()
 
         for user in users:
-            send_discount.delay(user.telegram_id, restaurant_id, restaurant_name)
+            if user.does_want_notifications:
+                send_discount.delay(user.telegram_id, restaurant_id, restaurant_name)

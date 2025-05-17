@@ -7,5 +7,8 @@ class Product:
     def __str__(self):
         return (f""
                 f"{self.name}\n"
-                f"Price: {self.price}\n"
-                f"Discount: {self.discount}\n")
+                f"قیمت پایه : {self.price}\n"
+                f"میزان تخفیف: {self.discount}\n"
+                f"قیمت نهایی: {int(self.price) - int(self.discount)}\n"
+                f"---------------------\n"
+                )
