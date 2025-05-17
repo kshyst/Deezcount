@@ -1,6 +1,7 @@
 from asgiref.sync import sync_to_async
 from telegram import (
     Update,
+    ReplyKeyboardMarkup,
 )
 from telegram.ext import (
     ContextTypes,
@@ -9,6 +10,7 @@ from telegram.ext import (
 
 from telegram_bot import get_restaurant_list
 from telegram_bot.statics.menu_ranges import RESTAURANT_NAME, SELECT_RESTAURANT, ENTRY
+from telegram_bot.statics.reply_keyboards import in_menu_buttons
 from telegram_user.models import AvailableRestaurant, ActiveRestaurant, User
 
 
@@ -17,6 +19,9 @@ async def send_restaurant_search_query(update: Update, context: ContextTypes.DEF
         chat_id=update.effective_chat.id,
         text="نام رستوران مورد نظر خود را وارد کنید.",
         reply_to_message_id=update.effective_message.id,
+        reply_markup=ReplyKeyboardMarkup(
+            in_menu_buttons, one_time_keyboard=True
+        ),
     )
     return RESTAURANT_NAME
 

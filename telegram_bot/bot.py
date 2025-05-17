@@ -1,6 +1,13 @@
+import logging
 import os
 
 import django
+
+from telegram_bot.menus.delete_restaurant import (
+    delete_restaurant,
+    show_active_restaurants_list,
+)
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_base.settings")
 django.setup()
 from asgiref.sync import sync_to_async
@@ -18,7 +25,8 @@ from telegram.ext import (
 
 from telegram_bot.menus.show_active_restaurants import show_active_restaurants
 from telegram_bot.statics.commands import Commands
-from telegram_bot.statics.menu_ranges import RESTAURANT_NAME, SELECT_RESTAURANT, ENTRY
+from telegram_bot.statics.menu_ranges import RESTAURANT_NAME, SELECT_RESTAURANT, ENTRY, SHOW_RESTAURANTS, \
+    DELETE_RESTAURANT
 from telegram_bot.statics.reply_keyboards import main_menu_buttons
 
 from telegram_user.models import User
@@ -31,6 +39,8 @@ from telegram_bot.menus.submit_restaurant import (
     select_restaurant,
 )
 
+
+logger = logging.getLogger(__name__)
 
 async def start_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
@@ -50,10 +60,18 @@ async def start_command_handler(update: Update, context: ContextTypes.DEFAULT_TY
 
     send_bulk_discounts.delay()
 
+async def end_conversation_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="به ربات دیزکانت خوش آمدید.",
+        reply_markup=ReplyKeyboardMarkup(main_menu_buttons, one_time_keyboard=True)
+    )
+    return ConversationHandler.END
 
 if __name__ == "__main__":
     app.add_handler(CommandHandler("start", start_command_handler))
     app.add_handler(MessageHandler(filters.Text(Commands.ACTIVE_RESTAURANT.value), show_active_restaurants))
+    app.add_handler(MessageHandler(filters.Text(Commands.BACK_TO_MAIN_MENU.value), end_conversation_handler))
     app.add_handler(ConversationHandler(
         entry_points=[
             CommandHandler("restaurant", send_restaurant_search_query),
@@ -70,8 +88,42 @@ if __name__ == "__main__":
                 MessageHandler(filters.TEXT, select_restaurant),
             ]
         },
-        fallbacks=[CommandHandler("cancel", lambda update, context: ConversationHandler.END),],
-        allow_reentry=False,
+        fallbacks=[
+            CommandHandler("cancel", end_conversation_handler),
+            MessageHandler(filters.Text(Commands.BACK_TO_MAIN_MENU.value), end_conversation_handler),
+        ],
+        allow_reentry=True,
+        persistent=False, #TODO : change to true
     ))
+    app.add_handler(
+        ConversationHandler(
+            entry_points=[
+                MessageHandler(
+                    filters.Text(Commands.REMOVE_RESTAURANT.value),
+                    show_active_restaurants_list,
+                ),
+            ],
+            states={
+                SHOW_RESTAURANTS: [
+                    MessageHandler(
+                        filters.Text(Commands.REMOVE_RESTAURANT.value),
+                        show_active_restaurants_list,
+                    ),
+                ],
+                DELETE_RESTAURANT: [
+                    MessageHandler(filters.TEXT, delete_restaurant),
+                ],
+            },
+            fallbacks=[
+                CommandHandler("cancel", end_conversation_handler),
+                MessageHandler(
+                    filters.Text(Commands.BACK_TO_MAIN_MENU.value),
+                    end_conversation_handler,
+                ),
+            ],
+            allow_reentry=True,
+            persistent=False,  # TODO : change to true
+        )
+    )
 
     app.run_polling()
