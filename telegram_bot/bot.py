@@ -8,6 +8,8 @@ from telegram_bot.menus.delete_restaurant import (
     show_active_restaurants_list,
 )
 
+from telegram_bot.menus.change_bot_status import change_bot_status
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_base.settings")
 django.setup()
 from asgiref.sync import sync_to_async
@@ -72,6 +74,7 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("start", start_command_handler))
     app.add_handler(MessageHandler(filters.Text(Commands.ACTIVE_RESTAURANT.value), show_active_restaurants))
     app.add_handler(MessageHandler(filters.Text(Commands.BACK_TO_MAIN_MENU.value), end_conversation_handler))
+    app.add_handler(MessageHandler(filters.Text(Commands.CHANGE_BOT_RUNNING_STATUS.value), change_bot_status))
     app.add_handler(ConversationHandler(
         entry_points=[
             CommandHandler("restaurant", send_restaurant_search_query),

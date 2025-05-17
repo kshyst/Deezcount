@@ -68,7 +68,7 @@ async def delete_restaurant(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     if selected_restaurant > len(context.user_data['restaurants']) or selected_restaurant <= 0:
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="شمراه رستوران مورد نظر وجود ندارد."
+            text="شماره رستوران مورد نظر وجود ندارد."
         )
         return DELETE_RESTAURANT
 

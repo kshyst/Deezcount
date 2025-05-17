@@ -36,6 +36,10 @@ class User(AbstractUser):
         default=True,
     )
 
+    def change_status(self):
+        self.does_want_notifications = not self.does_want_notifications
+        self.save()
+
     class Meta:
         verbose_name = "User"
         verbose_name_plural = "Users"
