@@ -3,10 +3,6 @@ from django.db import models
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = [
-        "password",
-    ]
-
     telegram_id = models.BigIntegerField(
         primary_key=True,
         unique=True,
@@ -19,6 +15,7 @@ class User(AbstractUser):
         max_length=255,
         null=False,
         blank=False,
+        unique=True,
         default="",
     )
 
@@ -35,6 +32,10 @@ class User(AbstractUser):
     does_want_notifications = models.BooleanField(
         default=True,
     )
+
+    REQUIRED_FIELDS = [
+        "password",
+    ]
 
     def change_status(self):
         self.does_want_notifications = not self.does_want_notifications

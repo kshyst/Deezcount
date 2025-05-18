@@ -47,15 +47,15 @@ logger = logging.getLogger(__name__)
 async def start_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=update.effective_chat.id,
+        text="به ربات دیزکانت خوش آمدید.",
         reply_to_message_id=update.effective_message.id,
         reply_markup=ReplyKeyboardMarkup(main_menu_buttons, one_time_keyboard=True
         ),
     )
 
-    if not await sync_to_async(User.objects.filter(telegram_id=update.effective_chat.id).exists)():
-        user = User(telegram_id=update.effective_chat.id, telegram_username=update.effective_chat.username)
-        name = update.effective_chat.first_name + " " + update.effective_chat.last_name if update.effective_chat.last_name else update.effective_chat.first_name
+    if not await sync_to_async(User.objects.filter(telegram_id=update.effective_user.id).exists)():
+        user = User(telegram_id=update.effective_user.id, telegram_username=update.effective_user.username, username=update.effective_user.username)
+        name = update.effective_user.first_name + " " + update.effective_user.last_name if update.effective_user.last_name else update.effective_user.first_name
         user.telegram_account_name = name
 
         await sync_to_async(user.save)()

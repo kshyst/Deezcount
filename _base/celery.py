@@ -14,6 +14,6 @@ celery_app.broker_connection = 'redis://localhost:6379/0'
 celery_app.conf.beat_schedule = {
     'send-discounts-every-15-min': {
         'task': 'tasks.send_bulk_discounts',
-        'schedule': 10,
+        'schedule': 10 * 60,
     },
 }
