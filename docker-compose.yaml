@@ -9,6 +9,7 @@ services:
       POSTGRES_PASSWORD: Very_safE_passwOrd0
     ports:
       - "5555:5555"
+    command: ["postgres", "-p", "5555"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
