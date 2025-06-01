@@ -32,8 +32,8 @@ from telegram_bot.statics.menu_ranges import RESTAURANT_NAME, SELECT_RESTAURANT,
 from telegram_bot.statics.reply_keyboards import main_menu_buttons
 
 from telegram_user.models import User
-from app import app
-from tasks import send_bulk_discounts
+from telegram_bot import app
+from .tasks import send_bulk_discounts
 
 from telegram_bot.menus.submit_restaurant import (
     send_restaurant_search_query,
