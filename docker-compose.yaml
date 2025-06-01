@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: deezcount
+      POSTGRES_USER: deez_count_user
+      POSTGRES_PASSWORD: Very_safE_passwOrd0
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  django:
+    build: .
+    command: >
+      sh -c "
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+
+  telegram_bot:
+    build: .
+    command: >
+      sh -c "
+      python -m telegram_bot.bot
+      "
+    depends_on:
+      - django
+      - redis
+    env_file:
+      - .env
+
+  celery_worker:
+    build: .
+    command: celery -A _base.celery worker -l info
+    depends_on:
+      - django
+      - redis
+      - db
+    env_file:
+      - .env
+
+  celery_beat:
+    build: .
+    command: celery -A _base.celery beat -l info
+    depends_on:
+      - django
+      - redis
+      - db
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
