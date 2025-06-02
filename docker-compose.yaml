@@ -8,8 +8,8 @@ services:
       POSTGRES_USER: deez_count_user
       POSTGRES_PASSWORD: Very_safE_passwOrd0
     ports:
-      - "5555:5555"
-    command: ["postgres", "-p", "5555"]
+      - "${DB_PORT}:${DB_PORT}"
+    command: ["postgres", "-p", "${DB_PORT}"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

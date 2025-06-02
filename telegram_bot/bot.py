@@ -96,7 +96,7 @@ if __name__ == "__main__":
             MessageHandler(filters.Text(Commands.BACK_TO_MAIN_MENU.value), end_conversation_handler),
         ],
         allow_reentry=True,
-        persistent=False, #TODO : change to true
+        persistent=False,
     ))
     app.add_handler(
         ConversationHandler(
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                 ),
             ],
             allow_reentry=True,
-            persistent=False,  # TODO : change to true
+            persistent=False,
         )
     )
 

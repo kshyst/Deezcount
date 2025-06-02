@@ -16,7 +16,7 @@ def send_discount(user_id, restaurant_id, restaurant_name):
         asyncio.run(app.bot.send_message(chat_id=user_id, text=message))
 
 
-@celery_app.task( name="tasks.send_bulk_discounts")
+@celery_app.task(name="tasks.send_bulk_discounts")
 def send_bulk_discounts():
     print("Sending bulk discounts...")
 
